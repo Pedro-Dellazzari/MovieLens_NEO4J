@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+
+  # Banco de dados Neo4j
+  neo4j:
+    image: neo4j:3.4.9
+    ports:
+      - 7474:7474
+      - 7687:7687
+    environment:
+      NEO4J_AUTH: "none"
+
+  # Código Python para ingestão do conjunto de dados MovieLens no Neo4j
+  ingestion:
+    build: ingestion
+    depends_on:
+      - neo4j
+    restart: on-failure
+    links:
+      - neo4j
+    environment:
+      NEO4J_HOST: neo4j
